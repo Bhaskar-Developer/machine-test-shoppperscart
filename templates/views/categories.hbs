@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../img/weather.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>{{title}}</title>
+</head>
+<body>
+  <div class="main-content">
+    {{>header}}
+    
+    {{!-- Create Category --}}
+    <p>Create New Category</p>  
+    <form id="create-category" >
+      <input id="create-category-input" placeholder="Enter Category Name">      
+      <button>Add To Categories</button>
+    </form>    
+    <div class="output">
+        <br>
+        <table id="html-data-table">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </table> 
+    </div>
+  </div>
+  {{>footer}}
+</body>
+<script src="/js/category.js"></script>
+</html>
