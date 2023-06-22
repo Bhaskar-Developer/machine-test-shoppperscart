@@ -6,6 +6,14 @@ class CategoryRepo {
     return rows;
   }
 
+  async findById(id) {
+    const { rows } = await pool.query(
+      `SELECT * FROM categories WHERE id = $1;`,
+      [id]
+    );
+    return rows[0];
+  }
+
   async create(name) {
     await pool.query('INSERT INTO categories (name) VALUES ($1);', [name]);
   }

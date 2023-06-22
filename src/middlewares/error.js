@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
   //assign all properties on err to the error object
   let error = { ...err };
   error.message = err.message;
-  //console.log('error', error);
+  console.log('error', error);
 
   //Duplicate key error
   if (parseInt(err.code) === 23505) {

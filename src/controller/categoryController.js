@@ -36,6 +36,23 @@ class CategoryController {
     });
   });
 
+  //@desc     Get Single Category
+  //@route    GET /api/v1/category/:id
+  //@access   Public
+  getCategory = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    if (!id) {
+      return next(new errorResponse('Please specify id', 400));
+    }
+    const category = await CategoryRepo.findById(Number(id));
+    res.status(200).json({
+      status: true,
+      code: 200,
+      category,
+      message: 'Category was successfully fetched',
+    });
+  });
+
   //@desc     Update A Category
   //@route    PUT /api/v1/category
   //@access   Public

@@ -1,7 +1,7 @@
 const dataTable = document.getElementById('html-data-table');
 const createCategoryForm = document.querySelector('#create-category');
 const createCategoryInput = document.querySelector('#create-category-input');
-const buttonSelector = document.querySelector('button');
+const buttonSelector = document.querySelector('#create-category-button');
 
 const populateAndRenderCategoriesTable = async (categories) => {
   categories.forEach((category) => {
@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
 
 document
   .querySelector('#html-data-table')
-  .addEventListener('click', (event) => {
+  .addEventListener('click', async (event) => {
     console.log(event.target.id);
     console.log(event.target.classList[0]);
 
@@ -69,7 +69,21 @@ document
     }
     if (event.target.classList[0] === 'delete') {
       if (confirm('Are you sure to Delete this Category?')) {
-        // API call to delete category
+        await fetch(`/api/v1/category?id=${event.target.id}`, {
+          method: 'DELETE',
+        });
       }
+
+      dataTable.innerHTML = `
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            `;
+      const response2 = await fetch(`/api/v1/category`);
+      const { categories } = await response2.json();
+      populateAndRenderCategoriesTable(categories);
     }
   });
