@@ -8,6 +8,33 @@ const updateCategoryButton = document.querySelector('#update-category-button');
 const updateCancelButton = document.querySelector('#update-cancel-button');
 let currentlySelectedCategoryId = '';
 
+const fetchCategories = async () => {
+  const response = await fetch(`/api/v1/category`);
+  const { categories } = await response.json();
+  return categories;
+};
+
+const resetTable = () => {
+  dataTable.innerHTML = `
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+  `;
+};
+
+const showAlert = (response) => {
+  const { status, code, message, error } = response;
+  if (status && code === 200 && message) {
+    alert(message);
+  }
+  if (!status && code !== 200 && error) {
+    alert(error);
+  }
+};
+
 const populateAndRenderCategoriesTable = async (categories) => {
   categories.forEach((category) => {
     let newRow = document.createElement('tr');
@@ -24,9 +51,7 @@ const populateAndRenderCategoriesTable = async (categories) => {
 
 createCategoryForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  console.log('create a new category');
   const newCategory = createCategoryInput.value;
-  console.log(newCategory);
 
   const response = await fetch('/api/v1/category', {
     method: 'POST',
@@ -35,26 +60,10 @@ createCategoryForm.addEventListener('submit', async (event) => {
     },
     body: JSON.stringify({ name: newCategory }),
   });
-
-  const { status, code, message, error } = await response.json();
-  if (status && code === 200 && message) {
-    alert(message);
-  }
-  if (!status && code !== 200 && error) {
-    alert(error);
-  }
-
-  dataTable.innerHTML = `
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Update</th>
-        <th>Delete</th>
-    </tr>
-  `;
+  showAlert(await response.json());
+  resetTable();
   createCategoryInput.value = '';
-  const response2 = await fetch(`/api/v1/category`);
-  const { categories } = await response2.json();
+  const categories = await fetchCategories();
   populateAndRenderCategoriesTable(categories);
 });
 
@@ -79,42 +88,22 @@ updateCategoryForm.addEventListener('submit', async (event) => {
       id: currentlySelectedCategoryId,
     }),
   });
-
-  const { status, code, message, error } = await response.json();
-  if (status && code === 200 && message) {
-    alert(message);
-  }
-  if (!status && code !== 200 && error) {
-    alert(error);
-  }
-
-  dataTable.innerHTML = `
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Update</th>
-        <th>Delete</th>
-    </tr>
-  `;
+  showAlert(await response.json());
+  resetTable();
 
   updateCategoryForm.style.display = 'none';
   createCategoryForm.style.display = 'inline';
   currentlySelectedCategoryId = '';
-  const response2 = await fetch(`/api/v1/category`);
-  const { categories } = await response2.json();
+  const categories = await fetchCategories();
   populateAndRenderCategoriesTable(categories);
 });
 
 window.addEventListener('DOMContentLoaded', async (event) => {
-  const response = await fetch(`/api/v1/category`);
-  const { categories } = await response.json();
+  const categories = await fetchCategories();
   populateAndRenderCategoriesTable(categories);
 });
 
 dataTable.addEventListener('click', async (event) => {
-  console.log(event.target.id);
-  console.log(event.target.classList[0]);
-
   if (event.target.classList[0] === 'update') {
     updateCategoryForm.style.display = 'inline';
     createCategoryForm.style.display = 'none';
@@ -134,17 +123,8 @@ dataTable.addEventListener('click', async (event) => {
         method: 'DELETE',
       });
     }
-
-    dataTable.innerHTML = `
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Update</th>
-                <th>Delete</th>
-            </tr>
-            `;
-    const response2 = await fetch(`/api/v1/category`);
-    const { categories } = await response2.json();
+    resetTable();
+    const categories = await fetchCategories();
     populateAndRenderCategoriesTable(categories);
   }
 });
